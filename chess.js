@@ -1,11 +1,35 @@
 const gameArea = document.getElementById("gameArea");
+const board = [];
 let player = "white";
 let positions = [];
-let board = [];
 let divs = [];
 let obj = {};
 
-function startGame() {
+const figures = [
+  ["pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"],
+  ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"],
+];
+
+let pieces = {
+  white: {
+    king: "\u2654",
+    queen: "\u2655",
+    rook: "\u2656",
+    bishop: "\u2657",
+    knight: "\u2658",
+    pawn: "\u2659",
+  },
+  black: {
+    king: "\u265A",
+    queen: "\u265B",
+    rook: "\u265C",
+    bishop: "\u265D",
+    knight: "\u265E",
+    pawn: "\u265F",
+  },
+};
+
+const startGame = () => {
   let rowArr = [];
   let divRow = [];
   for (let i = 0; i < 8; i++) {
@@ -96,26 +120,27 @@ function startGame() {
     board.push(rowArr);
     gameArea.appendChild(chessRow);
   }
-}
+};
 
-function pawnMove(obj, moves) {
+const pawnMove = (obj, moves) => {
+  let currentDiv = divs[obj.y][obj.x];
   for (let k = 0; k < moves.length; k++) {
     let moveDiv = divs[moves[k].y][moves[k].x];
 
     moves[k].status === "move"
-      ? (moveDiv.style.backgroundColor = "rgb(110, 110, 110)")
-      : (moveDiv.style.backgroundColor = "red");
+      ? (moveDiv.style.backgroundColor = "rgb(180, 250, 115)")
+      : (moveDiv.style.backgroundColor = "rgb(214, 51, 51)");
 
     moveDiv.onclick = () => {
-      board[obj.x][obj.y] = "";
+      board[obj.y][obj.x] = "";
       board[moves[k].y][moves[k].x] = { ...obj, y: moves[k].y, x: moves[k].x };
       divs[moves[k].y][moves[k].x].innerHTML = "";
 
       let moveFigure = document.createElement("div");
       moveFigure.classList.add("figure");
       moveFigure.innerText = obj.figure;
-      divs[moves[k].y][moves[k].x].appendChild(moveFigure);
-      divs[obj.y][obj.x].innerHTML = "";
+      moveDiv.appendChild(moveFigure);
+      currentDiv.innerHTML = "";
       console.log(board);
 
       clearBoard();
@@ -127,9 +152,9 @@ function pawnMove(obj, moves) {
       });
     };
   }
-}
+};
 
-function clearBoard() {
+const clearBoard = () => {
   divs.map((arr, a) => {
     arr.map((val, b) => {
       if ((a + b) % 2 === 0) {
@@ -140,9 +165,9 @@ function clearBoard() {
       return val;
     });
   });
-}
+};
 
-function knightMoves(obj) {
+const knightMoves = (obj) => {
   let moves = [];
   for (let i = -2; i <= 2; i += 4) {
     for (let j = -1; j <= 1; j += 2) {
@@ -171,9 +196,9 @@ function knightMoves(obj) {
     }
   }
   return moves;
-}
+};
 
-function rookMoves(obj) {
+const rookMoves = (obj) => {
   let moves = [];
   let i = 1;
 
@@ -229,9 +254,9 @@ function rookMoves(obj) {
   }
 
   return moves;
-}
+};
 
-function bishopMoves(obj) {
+const bishopMoves = (obj) => {
   let moves = [];
   let i = 1;
 
@@ -287,17 +312,17 @@ function bishopMoves(obj) {
   }
 
   return moves;
-}
+};
 
-function queenMoves(obj) {
+const queenMoves = (obj) => {
   let moves = [];
   let rook = rookMoves(obj);
   let bishop = bishopMoves(obj);
   moves = moves.concat(rook, bishop);
   return moves;
-}
+};
 
-function kingMoves(obj) {
+const kingMoves = (obj) => {
   let moves = [];
 
   for (let i = -1; i <= 1; i += 2) {
@@ -328,9 +353,9 @@ function kingMoves(obj) {
   }
 
   return moves;
-}
+};
 
-function select(i, j) {
+const select = (i, j) => {
   clearBoard();
   obj = board[i][j];
   let moves = [];
@@ -397,45 +422,45 @@ function select(i, j) {
               }
             }
           }
-          move(obj, moves);
+          pawnMove(obj, moves);
         }
       }
       break;
     case "knight":
       if (player === obj.color) {
         moves = knightMoves(obj);
-        move(obj, moves);
+        pawnMove(obj, moves);
       }
       break;
 
     case "rook":
       if (player === obj.color) {
         moves = rookMoves(obj);
-        move(obj, moves);
+        pawnMove(obj, moves);
       }
       break;
 
     case "bishop":
       if (player === obj.color) {
         moves = bishopMoves(obj);
-        move(obj, moves);
+        pawnMove(obj, moves);
       }
       break;
 
     case "queen":
       if (player === obj.color) {
         moves = queenMoves(obj);
-        move(obj, moves);
+        pawnMove(obj, moves);
       }
       break;
 
     case "king":
       if (player === obj.color) {
         moves = kingMoves(obj);
-        move(obj, moves);
+        pawnMove(obj, moves);
       }
       break;
   }
-}
+};
 
 startGame();
