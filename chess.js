@@ -1,33 +1,9 @@
 const gameArea = document.getElementById("gameArea");
+import { figures, pieces } from "./figure.js";
 const board = [];
 let player = "white";
-let positions = [];
 let divs = [];
 let obj = {};
-
-const figures = [
-  ["pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"],
-  ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"],
-];
-
-let pieces = {
-  white: {
-    king: "\u2654",
-    queen: "\u2655",
-    rook: "\u2656",
-    bishop: "\u2657",
-    knight: "\u2658",
-    pawn: "\u2659",
-  },
-  black: {
-    king: "\u265A",
-    queen: "\u265B",
-    rook: "\u265C",
-    bishop: "\u265D",
-    knight: "\u265E",
-    pawn: "\u265F",
-  },
-};
 
 const startGame = () => {
   let rowArr = [];
@@ -43,11 +19,10 @@ const startGame = () => {
       chessBox.classList.add("chessBox");
       chessBox.setAttribute("id", `${i}${j}`);
 
-      if ((i + j) % 2 !== 0) {
-        chessBox.style.backgroundColor = "#968E96";
-      } else {
-        chessBox.style.backgroundColor = "#EEEEEE";
-      }
+      (i + j) % 2 !== 0
+        ? (chessBox.style.backgroundColor = "#968E96")
+        : (chessBox.style.backgroundColor = "#EEEEEE");
+
       let figure = document.createElement("div");
 
       if (i === 0) {
@@ -110,6 +85,7 @@ const startGame = () => {
         columnSpan.innerText = String.fromCharCode(97 + j);
         chessBox.appendChild(columnSpan);
       }
+      let positions = [];
       chessBox.addEventListener("click", () => {
         positions = select(i, j);
       });
@@ -122,7 +98,7 @@ const startGame = () => {
   }
 };
 
-const pawnMove = (obj, moves) => {
+const move = (obj, moves) => {
   let currentDiv = divs[obj.y][obj.x];
   for (let k = 0; k < moves.length; k++) {
     let moveDiv = divs[moves[k].y][moves[k].x];
@@ -157,11 +133,9 @@ const pawnMove = (obj, moves) => {
 const clearBoard = () => {
   divs.map((arr, a) => {
     arr.map((val, b) => {
-      if ((a + b) % 2 === 0) {
-        val.style.backgroundColor = "#EEEEEE";
-      } else {
-        val.style.backgroundColor = "#968E96";
-      }
+      (a + b) % 2 === 0
+        ? (val.style.backgroundColor = "#EEEEEE")
+        : (val.style.backgroundColor = "#968E96");
       return val;
     });
   });
@@ -390,7 +364,7 @@ const select = (i, j) => {
               }
             }
           }
-          pawnMove(obj, moves);
+          move(obj, moves);
         }
       }
       if (player === "black") {
@@ -422,42 +396,42 @@ const select = (i, j) => {
               }
             }
           }
-          pawnMove(obj, moves);
+          move(obj, moves);
         }
       }
       break;
     case "knight":
       if (player === obj.color) {
         moves = knightMoves(obj);
-        pawnMove(obj, moves);
+        move(obj, moves);
       }
       break;
 
     case "rook":
       if (player === obj.color) {
         moves = rookMoves(obj);
-        pawnMove(obj, moves);
+        move(obj, moves);
       }
       break;
 
     case "bishop":
       if (player === obj.color) {
         moves = bishopMoves(obj);
-        pawnMove(obj, moves);
+        move(obj, moves);
       }
       break;
 
     case "queen":
       if (player === obj.color) {
         moves = queenMoves(obj);
-        pawnMove(obj, moves);
+        move(obj, moves);
       }
       break;
 
     case "king":
       if (player === obj.color) {
         moves = kingMoves(obj);
-        pawnMove(obj, moves);
+        move(obj, moves);
       }
       break;
   }
